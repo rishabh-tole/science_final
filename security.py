@@ -1,7 +1,7 @@
 from hcsro4 import HCSR04
 import machine
 import utime
-class S:
+class Security:
 
     def __init__(self):
         self._state = "DISARMED"
@@ -34,7 +34,6 @@ class S:
     def disarm(self):
         ans = input("whats the pass:")
         #for now
-        ans = "hell0"
         if ans == self.password:
             self._state = "DISARMED"
             self.light.off()
