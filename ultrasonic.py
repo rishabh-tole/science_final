@@ -1,8 +1,7 @@
-import utime
 from hcsro4 import HCSR04
 import machine
-
-class Security:
+import utime
+class S:
 
     def __init__(self):
         self._state = "DISARMED"
@@ -10,9 +9,9 @@ class Security:
         self.sensor = HCSR04(trigger_pin=5, echo_pin=4)
         self.buzzer = machine.Pin(14, machine.Pin.OUT)
         self.light = machine.Pin(12, machine.Pin.OUT)
-        self.button = machine.Pin(1, machine.Pin.IN, machine.Pin.PULL_UP)
-        self.start = utime.ticks_ms()
+        self.button = machine.Pin(0, machine.Pin.IN, machine.Pin.PULL_UP)
         self.password = "hell0"
+        print("imports are fine")
         
 
     def calibrate(self):
@@ -22,6 +21,7 @@ class Security:
         for x in range(50):
             self.buzzer.on()
             utime.sleep_ms(100)
+            self.buzzer.off()
 
     def call_the_police(self):
         print("calling the police...")
@@ -33,29 +33,32 @@ class Security:
 
     def disarm(self):
         ans = input("whats the pass:")
+        #for now
+        ans = "hell0"
         if ans == self.password:
             self._state = "DISARMED"
             self.light.off()
         else:
             print("wrong pass")
 
-    while True:
+    def start(self):
+        while True:
 
-        if self.button.value() == 0:
-            self.start = utime.ticks_ms()
-            if ticks_diff(itime.ticks_us(), self.start) > 1000:
+
+            if int(self.button.value()) == 0:
                 if self._state == "ARMED":
                     self.disarm()
                 else:
                     self.arm()
+                utime.sleep_ms(500)
 
-        if self._state == "ARMED" and ticks_diff(itime.ticks_us(), self.start) > 500:
-            self.calibrate()
-            actual_dist =  self.sensor.distance_cm()
+            if self._state == "ARMED":
+                self.calibrate()
+                actual_dist =  self.sensor.distance_cm()
 
-            if self._ref_distance*0.7 > actual_dist:
-                self.buzz()
-                self.call_the_police()
+                if self._ref_distance*0.7 > actual_dist:
+                    self.buzz()
+                    self.call_the_police()
 
 
                 
